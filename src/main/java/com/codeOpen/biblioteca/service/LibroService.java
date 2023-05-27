@@ -24,8 +24,8 @@ public class LibroService {
         return libroRepository.findById(id);
     }
     
-    public Optional<Libro> getByNombre(String nombre){
-        return libroRepository.findByNombre(nombre);
+    public Optional<Libro> getByTitulo(String titulo){
+        return libroRepository.findByTitulo(titulo);
     }
     
     public Optional<Libro> getByAutor(String autor){
@@ -48,8 +48,8 @@ public class LibroService {
         return libroRepository.existsById(id);
     }
     
-    public boolean existsByNombre(String nombre){
-        return libroRepository.existsByNombre(nombre);
+    public boolean existsByTitulo(String titulo){
+        return libroRepository.existsByTitulo(titulo);
     }
     
     public boolean existsByAutor(String autor){

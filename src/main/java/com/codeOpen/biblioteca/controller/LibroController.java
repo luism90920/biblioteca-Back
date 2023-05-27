@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,7 +48,7 @@ public class LibroController {
         if (StringUtils.isBlank(libroDto.getTitulo())) {
             return new ResponseEntity(new Mensaje("el título es obligatorio"), HttpStatus.BAD_REQUEST);
         }
-        if (libroService.existsByNombre(libroDto.getTitulo())) {
+        if (libroService.existsByTitulo(libroDto.getTitulo())) {
             return new ResponseEntity(new Mensaje("ese título ya existe"), HttpStatus.BAD_REQUEST);
         }
         Libro libro = new Libro(libroDto.getTitulo());
@@ -55,12 +56,12 @@ public class LibroController {
         return new ResponseEntity(new Mensaje("libro creado"), HttpStatus.OK);
     }
     
-    @PutExchange("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody LibroDto libroDto){
         if (!libroService.existsById(id)) {
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         }
-        if (libroService.existsByNombre(libroDto.getTitulo()) && libroService.getByNombre(libroDto.getTitulo()).get().getId() != id) {
+        if (libroService.existsByTitulo(libroDto.getTitulo()) && libroService.getByTitulo(libroDto.getTitulo()).get().getId() != id) {
             return new ResponseEntity(new Mensaje("ese nombre ya existe"), HttpStatus.BAD_REQUEST);
         }
         if (StringUtils.isBlank(libroDto.getTitulo())) {

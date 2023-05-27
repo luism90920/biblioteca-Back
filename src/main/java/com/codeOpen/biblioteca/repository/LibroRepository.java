@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface LibroRepository extends JpaRepository<Libro, Integer>{
     
     //Buscar por nombre
-    Optional<Libro> findByNombre(String nombre);
+    Optional<Libro> findByTitulo(String titulo);
     
     //Buscar por autor
     Optional<Libro> findByAutor(String autor);
@@ -18,7 +18,7 @@ public interface LibroRepository extends JpaRepository<Libro, Integer>{
     //Buscar por género
     Optional<Libro> findByGenero(String genero);
     
-    boolean existsByNombre(String nombre);
+    boolean existsByTitulo(String titulo);
     
     boolean existsByAutor(String autor);
     
