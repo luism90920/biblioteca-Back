@@ -2,10 +2,13 @@ package com.codeOpen.biblioteca.controller;
 
 import com.codeOpen.biblioteca.dto.LibroDto;
 import com.codeOpen.biblioteca.dto.Mensaje;
+import com.codeOpen.biblioteca.entity.Autor;
 import com.codeOpen.biblioteca.entity.Libro;
+import com.codeOpen.biblioteca.service.AutorService;
 import com.codeOpen.biblioteca.service.LibroService;
 import io.micrometer.common.util.StringUtils;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,9 @@ public class LibroController {
 
     @Autowired
     LibroService libroService;
+    
+    @Autowired
+    AutorService autorService;
 
     @GetMapping("/lista")
     public ResponseEntity<List<Libro>> list() {
@@ -51,7 +57,11 @@ public class LibroController {
         if (libroService.existsByTitulo(libroDto.getTitulo())) {
             return new ResponseEntity(new Mensaje("ese título ya existe"), HttpStatus.BAD_REQUEST);
         }
-        Libro libro = new Libro(libroDto.getTitulo());
+        if (StringUtils.isBlank(libroDto.getNombreAutor())) {
+            return new ResponseEntity(new Mensaje("el autor es obligatorio"), HttpStatus.BAD_REQUEST);
+        }
+        Optional<Autor> autor = autorService.getByNombre(libroDto.getNombreAutor());
+        Libro libro = new Libro(libroDto.getTitulo(), autor.get());
         libroService.save(libro);
         return new ResponseEntity(new Mensaje("libro creado"), HttpStatus.OK);
     }
@@ -61,6 +71,9 @@ public class LibroController {
         if (!libroService.existsById(id)) {
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
         }
+        
+        //el libro existe pero el nombre es de otro "id" que ya existe y no del "id" que quiero modificar
+        //y tiene el mismo nombre que quiero renombrar
         if (libroService.existsByTitulo(libroDto.getTitulo()) && libroService.getByTitulo(libroDto.getTitulo()).get().getId() != id) {
             return new ResponseEntity(new Mensaje("ese nombre ya existe"), HttpStatus.BAD_REQUEST);
         }
@@ -68,8 +81,10 @@ public class LibroController {
             return new ResponseEntity(new Mensaje("el título es obligatorio"), HttpStatus.BAD_REQUEST);
         }
         
+        Optional<Autor> autor = autorService.getByNombre(libroDto.getNombreAutor());
         Libro libro = libroService.getOne(id).get();
         libro.setTitulo(libroDto.getTitulo());
+        libro.setAutor(autor.get());
         libroService.save(libro);
         return new ResponseEntity(new Mensaje("libro modificado"), HttpStatus.OK);
     }

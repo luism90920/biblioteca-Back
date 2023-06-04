@@ -32,8 +32,9 @@ public class Libro {
     public Libro() {
     }
 
-    public Libro(String titulo) {
+    public Libro(String titulo, Autor autor) {
         this.titulo = titulo;
+        this.autor = autor;
     }
     
     
