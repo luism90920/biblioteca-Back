@@ -8,7 +8,7 @@ public class LibroDto {
     
     private String titulo;
     
-    private String  nombreAutor;
+    private String nombreAutor;
 
     public LibroDto() {
     }
